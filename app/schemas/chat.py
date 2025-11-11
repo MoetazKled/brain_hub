@@ -1,12 +1,13 @@
 from pydantic import BaseModel
 from datetime import datetime
-from typing import Optional , List
+from typing import Optional, List
 
 class ChatRequest(BaseModel):
     message: str
     conversation_id: Optional[str] = None
     user_id: Optional[str] = None
     use_rag: bool = True
+    use_multi_agent: bool = False
 
 class ChatResponse(BaseModel):
     response: str
@@ -14,3 +15,4 @@ class ChatResponse(BaseModel):
     message_id: str
     timestamp: datetime
     sources: Optional[List[str]] = None
+    agents_used: Optional[List[str]] = None
