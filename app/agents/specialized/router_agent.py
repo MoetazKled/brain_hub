@@ -1,33 +1,17 @@
-from app.llm.openai_client import OpenAIClient
-from app.core.logger import logger
-
+from langchain_openai import ChatOpenAI
+from app.core.config import settings
 
 class RouterAgent:
     def __init__(self):
-        self.openai_client = OpenAIClient()
-
+        self.llm = ChatOpenAI(model="gpt-4o-mini", temperature=0, openai_api_key=settings.OPENAI_API_KEY)
+    
     def route(self, user_message: str) -> str:
-        prompt = f"""You are a router. Analyze this message and decide which agent should handle it.
+        prompt = f"""Analyze this message and pick ONE agent: research, code, or summary
 
-Available agents:
-- research: For questions, research, finding information, general knowledge
-- code: For programming, coding, debugging, technical implementation
-- summary: For summarizing text, documents, or creating concise overviews
+Message: {user_message}
 
-Message: "{user_message}"
-
-Respond with ONLY ONE WORD: research, code, or summary"""
-
-        messages = [
-            {"role": "system", "content": "You are a routing assistant."},
-            {"role": "user", "content": prompt}
-        ]
-
-        response = self.openai_client.generate_response(messages)
-        agent_type = response.strip().lower()
-
-        if agent_type not in ["research", "code", "summary"]:
-            agent_type = "research"
-
-        logger.info(f"Routed to: {agent_type}")
-        return agent_type
+Respond with ONLY: research OR code OR summary"""
+        
+        response = self.llm.invoke(prompt)
+        agent_type = response.content.strip().lower()
+        return agent_type if agent_type in ["research", "code", "summary"] else "research"

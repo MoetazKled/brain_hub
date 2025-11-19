@@ -1,0 +1,4 @@
+FastAPI is a modern Python web framework.
+FastAPI is built on top of Starlette and Pydantic.
+FastAPI provides automatic API documentation with Swagger UI.
+FastAPI supports async/await for high performance.

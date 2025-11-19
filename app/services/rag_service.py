@@ -1,29 +1,18 @@
 from sqlalchemy.orm import Session
-from app.rag.retrieval.retriever import Retriever
-from app.core.logger import logger
-
+from app.rag.vector_store import VectorStore
 
 class RAGService:
     def __init__(self, db: Session):
         self.db = db
-        self.retriever = Retriever(db)
-
+        self.vector_store = VectorStore()
+    
     def get_context(self, query: str) -> dict:
-        retrieved_docs = self.retriever.retrieve(query, top_k=3)
-
-        if not retrieved_docs:
+        docs = self.vector_store.search(query, k=3)
+        
+        if not docs:
             return None
-
-        context = "\n\n".join([
-            f"From {doc['source']}:\n{doc['content']}"
-            for doc in retrieved_docs
-        ])
-
-        sources = list(set([doc['source'] for doc in retrieved_docs]))
-
-        logger.info(f"Retrieved context from {len(sources)} documents")
-
-        return {
-            "context": context,
-            "sources": sources
-        }
+        
+        context = "\n\n".join([f"From {d.metadata.get('source')}:\n{d.page_content}" for d in docs])
+        sources = list(set([d.metadata.get('source') for d in docs]))
+        
+        return {"context": context, "sources": sources}

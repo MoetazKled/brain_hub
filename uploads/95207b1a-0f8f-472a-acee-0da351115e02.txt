@@ -1,0 +1,4 @@
+LangChain is a framework for building LLM applications.
+LangChain provides chains for composing LLM calls.
+LangChain has built-in document loaders for PDFs, DOCX, and more.
+LangChain Expression Language (LCEL) makes chains easy to build.

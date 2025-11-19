@@ -1,0 +1,4 @@
+LangChain is a framework for building LLM applications.
+LangChain provides document loaders for PDFs and text files.
+LangChain has vector stores like ChromaDB and Pinecone.
+LangChain Expression Language makes chains easy to build.
